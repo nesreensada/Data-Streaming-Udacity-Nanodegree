@@ -10,8 +10,8 @@ This repo the material and projects for Udacity Data Streaming Nanodegree contai
 
 1. [Data Ingestion with Kafka & Kafka Streaming](https://github.com/nesreensada/Data-Streaming-Udacity-Nanodegree/tree/master/Part1_Data_Ingestion_with_Kafka_%26_Kafka_Streaming)
 
-2. [Streaming API Development and
-Documentation]()
+2. Streaming API Development and
+Documentation
 
 #### Projects
 
@@ -19,7 +19,7 @@ Documentation]()
 and Train Availability
 Using Kafka](https://github.com/nesreensada/Data-Streaming-Udacity-Nanodegree/tree/master/Projects/Optimizing_public_transportation): Aa streaming event pipeline around Apache Kafka and its ecosystem. Using public data from the Chicago Transit Authority we will construct an event pipeline around Kafka that allows us to simulate and display the status of train lines in real time. **tools**: python, Kafka, Faust Stream processor and KSQL.
 
-2. [Analyze San Francisco Crime Rate with Apache Spark Streaming](): 
+2. Analyze San Francisco Crime Rate with Apache Spark Streaming: 
 
 
 ## Licence 
