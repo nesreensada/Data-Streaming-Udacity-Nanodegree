@@ -37,16 +37,16 @@ class Station(Producer):
         # replicas
         #
         #
-        topic_name = f"com.udacity.station.{station_name}" # TODO: Come up with a better topic name
+        topic_name = "com.udacity.station.arrivals.v1" # TODO: Come up with a better topic name
         super().__init__(
             topic_name,
             key_schema=Station.key_schema,
             # TODO: value_schema=Station.value_schema, # TODO: Uncomment once schema is defined
             value_schema=Station.value_schema,
             # TODO: num_partitions=???,
-            num_partitions=10,
+            num_partitions=4,
             # TODO: num_replicas=???,
-            num_replicas=5,
+            num_replicas=2,
         )
 
         self.station_id = int(station_id)
@@ -66,16 +66,23 @@ class Station(Producer):
         #
         #
         logger.info("arrival kafka integration")
-        self.producer.produce(
-           topic=self.topic_name,
-           key={"timestamp": self.time_millis()},
-           value={
-              "train":train,
-              "direction":direction,
-              "prev_station_id":prev_station_id,
-              "prev_direction":prev_direction
-           },
-        )
+        try:
+            self.producer.produce(
+               topic=self.topic_name,
+               key={"timestamp": self.time_millis()},
+               value={
+                  "station_id":self.station_id,
+                  "train_id":train.train_id
+                  "direction":direction,
+                  "line":self.color.name,
+                  "train_status":train.status.name,
+                  "prev_station_id":prev_station_id,
+                  "prev_direction":prev_direction
+               },
+            )
+        except Exception as e:
+            logger.Exception(f"failed to send from the station kafka producer{e}")
+            raise e
 
     def __str__(self):
         return "Station | {:^5} | {:<30} | Direction A: | {:^5} | departing to {:<30} | Direction B: | {:^5} | departing to {:<30} | ".format(

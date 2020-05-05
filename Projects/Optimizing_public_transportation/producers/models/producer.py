@@ -5,7 +5,7 @@ import time
 
 from confluent_kafka import avro
 from confluent_kafka.admin import AdminClient, NewTopic
-from confluent_kafka.avro import AvroProducer, CachedSchemaRegistryClient
+from confluent_kafka.avro import AvroProducer
 
 logger = logging.getLogger(__name__)
 
@@ -38,11 +38,9 @@ class Producer:
         #
         # TODO: Configure the broker properties below. Make sure to reference the project README
         # and use the Host URL for Kafka and Schema Registry!
-        #
-        #
-        schema_registry = CachedSchemaRegistryClient({"url": SCHEMA_REGISTRY_URL})
         self.broker_properties = {
-            "bootstrap.servers": BROKER_URL
+            "bootstrap.servers": BROKER_URL,
+            "schema.registry.url": SCHEMA_REGISTRY_URL
         }
 
         # If the topic does not already exist, try to create it
@@ -53,7 +51,9 @@ class Producer:
         # TODO: Configure the AvroProducer
         self.producer = AvroProducer(
             self.broker_properties,
-            schema_registry=schema_registry
+            default_key_schema=key_schema,
+            default_value_schema=value_schema,
+            
         )
 
     def topic_exists(self, client):
@@ -63,14 +63,10 @@ class Producer:
 
     def create_topic(self):
         """Creates the producer topic if it does not already exist"""
-        #
-        #
         # TODO: Write code that creates the topic for this producer if it does not already exist on
         # the Kafka Broker.
-        #
-        #
         client = AdminClient({'bootstrap.servers':BROKER_URL})
-        exists = topic_exists(client)
+        exists = self.topic_exists(client)
         logger.info(f"Topic {self.topic_name} exists: {exists}")
         
         if not topic_exists:
@@ -91,13 +87,10 @@ class Producer:
 
     def close(self):
         """Prepares the producer for exit by cleaning up the producer"""
-        #
-        #
         # TODO: Write cleanup code for the Producer here
-        #
-        #
-        self.producer.close()
-        logger.info("producer close")
+        if self.producer:
+            self.producer.flush()
+            logger.info("producer close")
 
     def time_millis(self):
         """Use this function to get the key for Kafka Events"""

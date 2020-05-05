@@ -37,16 +37,16 @@ class Turnstile(Producer):
         # replicas
         #
         #
-        topic_name = f"com.udacity.turnstile.{station_name}"
+        topic_name = "com.udacity.turnstile.v1"
         super().__init__(
             topic_name, # TODO: Come up with a better topic name
             key_schema=Turnstile.key_schema,
             # TODO: value_schema=Turnstile.value_schema, TODO: Uncomment once schema is defined
             value_schema=Turnstile.value_schema,
             # TODO: num_partitions=???,
-            num_partitions=10,
+            num_partitions=4,
             # TODO: num_replicas=???,
-            num_replicas=5,
+            num_replicas=2,
         )
         self.station = station
         self.turnstile_hardware = TurnstileHardware(station)
@@ -54,18 +54,20 @@ class Turnstile(Producer):
     def run(self, timestamp, time_step):
         """Simulates riders entering through the turnstile."""
         num_entries = self.turnstile_hardware.get_entries(timestamp, time_step)
-        logger.info("turnstile kafka integration incomplete - skipping")
-
-        #
-        #
+        logger.info(f"turnstile kafka integration passenger count{num_entries}")
         # TODO: Complete this function by emitting a message to the turnstile topic for the number
         # of entries that were calculated
-        #
-        #
-        self.producer.produce(
-           topic=self.topic_name,
-           key={"timestamp": self.time_millis()},
-           value={
-             "num_entries": num_entries
-           },
-        )
+        for _ in range(num_entries):
+            try:
+                self.producer.produce(
+                   topic=self.topic_name,
+                   key={"timestamp": self.time_millis()},
+                   value={
+                    "station_id": self.station.station_id,
+                    "station_name": self.station.name,
+                    "line":self.station.color.name,
+                   }
+                )
+            except Exception as e:
+                logger.Exception('Exception Emitting messages in turnstile')
+                raise e
