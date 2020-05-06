@@ -66,10 +66,8 @@ def configure_connector():
     try:
         resp.raise_for_status()
     except:
-        print(f"failed creating connector: {json.dumps(resp.json(), indent=2)}")
-        exit(1)
-    print("connector created successfully.")
-    print("Use kafka-console-consumer and kafka-topics to see data!")
+        logger.error(f"failed creating connector: {json.dumps(resp.json(), indent=2)}")
+    logging.debug("connector created successfully")
 
 if __name__ == "__main__":
     configure_connector()

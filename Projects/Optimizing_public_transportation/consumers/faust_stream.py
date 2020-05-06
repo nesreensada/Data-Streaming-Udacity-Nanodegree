@@ -33,16 +33,16 @@ class TransformedStation(faust.Record):
 #   places it into a new topic with only the necessary information.
 app = faust.App("stations-stream", broker="kafka://localhost:9092", store="memory://")
 # TODO: Define the input Kafka Topic. Hint: What topic did Kafka Connect output to?
-# topic = app.topic("TODO", value_type=Station)
+topic = app.topic("com.udacity.stations", value_type=Station)
 # TODO: Define the output Kafka Topic
-# out_topic = app.topic("TODO", partitions=1)
+out_topic = app.topic("com.udacity.stations.table", partitions=1)
 # TODO: Define a Faust Table
-#table = app.Table(
-#    # "TODO",
-#    # default=TODO,
-#    partitions=1,
-#    changelog_topic=out_topic,
-#)
+table = app.Table(
+   "com.udacity.stations.table",
+   default=TransformedStation,
+   partitions=1,
+   changelog_topic=out_topic,
+)
 
 
 #
@@ -50,9 +50,29 @@ app = faust.App("stations-stream", broker="kafka://localhost:9092", store="memor
 # TODO: Using Faust, transform input `Station` records into `TransformedStation` records. Note that
 # "line" is the color of the station. So if the `Station` record has the field `red` set to true,
 # then you would set the `line` of the `TransformedStation` record to the string `"red"`
-#
-#
+@app.agent(topic)
+async def process(stations):
 
-
+    async for station in stations:
+        #
+        # TODO: Use the URI as key, and add the number for each click event. Print the updated
+        #       entry for each key so you can see how the table is changing.
+        #       See: https://faust.readthedocs.io/en/latest/userguide/tables.html#basics
+        #
+        if station.red:
+            line = 'red'
+        elif station.blue:
+            line = 'blue'
+        elif station.green:
+            line = 'green'
+        else:
+            line = 'N/A'
+            logger.info(f"No line color for {station.station_id}")
+        table[station.station_id] = TransformedStation(
+            station_name= station.station_name,
+            station_id= station.station_id,
+            order = station.order,
+            line = line
+            )
 if __name__ == "__main__":
     app.main()

@@ -78,7 +78,7 @@ class Producer:
                     future.result()
                     logger.info(f"Topic {self.topic_name} created")
                 except Exception as e:
-                    print(f"failed to create topic {self.topic_name}: {e}")
+                    logger.error(f"failed to create topic {self.topic_name}: {e}")
                     raise
 
 
