@@ -44,9 +44,9 @@ class Station(Producer):
             # TODO: value_schema=Station.value_schema, # TODO: Uncomment once schema is defined
             value_schema=Station.value_schema,
             # TODO: num_partitions=???,
-            num_partitions=4,
+            num_partitions=3,
             # TODO: num_replicas=???,
-            num_replicas=2,
+            num_replicas=1,
         )
 
         self.station_id = int(station_id)
@@ -72,7 +72,7 @@ class Station(Producer):
                key={"timestamp": self.time_millis()},
                value={
                   "station_id":self.station_id,
-                  "train_id":train.train_id
+                  "train_id":train.train_id,
                   "direction":direction,
                   "line":self.color.name,
                   "train_status":train.status.name,
@@ -81,7 +81,7 @@ class Station(Producer):
                },
             )
         except Exception as e:
-            logger.Exception(f"failed to send from the station kafka producer{e}")
+            logger.error(f"failed to send from the station kafka producer{e}")
             raise e
 
     def __str__(self):

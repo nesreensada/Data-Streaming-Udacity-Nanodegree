@@ -69,8 +69,8 @@ class Producer:
         exists = self.topic_exists(client)
         logger.info(f"Topic {self.topic_name} exists: {exists}")
         
-        if not topic_exists:
-            futures = client.create_topic(
+        if not exists:
+            futures = client.create_topics(
                 [NewTopic(topic=self.topic_name,  num_partitions=self.num_partitions, replication_factor=self.num_replicas)])
 
             for topic, future in futures.items():

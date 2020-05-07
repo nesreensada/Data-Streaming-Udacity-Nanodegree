@@ -46,7 +46,7 @@ class Turnstile(Producer):
             # TODO: num_partitions=???,
             num_partitions=4,
             # TODO: num_replicas=???,
-            num_replicas=2,
+            num_replicas=1,
         )
         self.station = station
         self.turnstile_hardware = TurnstileHardware(station)

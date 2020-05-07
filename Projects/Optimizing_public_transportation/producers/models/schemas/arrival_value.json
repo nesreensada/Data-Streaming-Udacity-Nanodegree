@@ -9,7 +9,7 @@
     },
     {
       "name": "train_id",
-      "type": "int"
+      "type": "string"
     },
     {
       "name": "direction",
@@ -25,11 +25,11 @@
     },
     {
       "name": "prev_station_id",
-      "type": ["null","int"]
+      "type": ["int", "null"]
     },
     {
       "name": "prev_direction",
-      "type": ["null","string"]
+      "type": ["string", "null"]
     }
   ]
 }
