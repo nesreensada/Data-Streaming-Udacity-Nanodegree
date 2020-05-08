@@ -28,11 +28,12 @@ CREATE TABLE turnstile (
     line VARCHAR
 ) WITH (
     KAFKA_TOPIC='com.udacity.turnstile.v1',
-    VALUE_FORMAT='avro'
+    VALUE_FORMAT='avro',
+    key = 'station_id'
 );
 
 CREATE TABLE turnstile_summary
-WITH (VALUE_FORMAT='jsib') AS
+WITH (VALUE_FORMAT='json') AS
     SELECT station_id, COUNT(station_id) as turnsile_count from turnstile
     GROUP BY station_id;
 """
