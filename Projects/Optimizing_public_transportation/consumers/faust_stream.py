@@ -27,16 +27,10 @@ class TransformedStation(faust.Record):
     station_name: str
     order: int
     line: str
-
-
-# TODO: Define a Faust Stream that ingests data from the Kafka Connect stations topic and
-#   places it into a new topic with only the necessary information.
+    
 app = faust.App("stations-stream", broker="kafka://localhost:9092", store="memory://")
-# TODO: Define the input Kafka Topic. Hint: What topic did Kafka Connect output to?
 topic = app.topic("com.udacity.stations", value_type=Station)
-# TODO: Define the output Kafka Topic
 out_topic = app.topic("com.udacity.stations.table", partitions=1)
-# TODO: Define a Faust Table
 table = app.Table(
    "com.udacity.stations.table",
    default=TransformedStation,
@@ -44,21 +38,12 @@ table = app.Table(
    changelog_topic=out_topic,
 )
 
-
-#
-#
-# TODO: Using Faust, transform input `Station` records into `TransformedStation` records. Note that
 # "line" is the color of the station. So if the `Station` record has the field `red` set to true,
 # then you would set the `line` of the `TransformedStation` record to the string `"red"`
 @app.agent(topic)
 async def process(stations):
 
     async for station in stations:
-        #
-        # TODO: Use the URI as key, and add the number for each click event. Print the updated
-        #       entry for each key so you can see how the table is changing.
-        #       See: https://faust.readthedocs.io/en/latest/userguide/tables.html#basics
-        #
         if station.red:
             line = 'red'
         elif station.blue:

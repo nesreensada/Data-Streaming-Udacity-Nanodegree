@@ -13,10 +13,6 @@ logger = logging.getLogger(__name__)
 
 class Turnstile(Producer):
     key_schema = avro.load(f"{Path(__file__).parents[0]}/schemas/turnstile_key.json")
-
-    #
-    # TODO: Define this value schema in `schemas/turnstile_value.json, then uncomment the below
-    #
     value_schema = avro.load(
        f"{Path(__file__).parents[0]}/schemas/turnstile_value.json"
     )
@@ -31,21 +27,12 @@ class Turnstile(Producer):
             .replace("'", "")
         )
 
-        #
-        #
-        # TODO: Complete the below by deciding on a topic name, number of partitions, and number of
-        # replicas
-        #
-        #
         topic_name = "com.udacity.turnstile.v1"
         super().__init__(
-            topic_name, # TODO: Come up with a better topic name
+            topic_name, 
             key_schema=Turnstile.key_schema,
-            # TODO: value_schema=Turnstile.value_schema, TODO: Uncomment once schema is defined
             value_schema=Turnstile.value_schema,
-            # TODO: num_partitions=???,
             num_partitions=4,
-            # TODO: num_replicas=???,
             num_replicas=1,
         )
         self.station = station
@@ -55,8 +42,6 @@ class Turnstile(Producer):
         """Simulates riders entering through the turnstile."""
         num_entries = self.turnstile_hardware.get_entries(timestamp, time_step)
         logger.info(f"turnstile kafka integration passenger count{num_entries}")
-        # TODO: Complete this function by emitting a message to the turnstile topic for the number
-        # of entries that were calculated
         for _ in range(num_entries):
             try:
                 self.producer.produce(

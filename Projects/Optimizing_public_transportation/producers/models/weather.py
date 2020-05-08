@@ -29,12 +29,6 @@ class Weather(Producer):
     summer_months = set((6, 7, 8))
 
     def __init__(self, month):
-        #
-        #
-        # TODO: Complete the below by deciding on a topic name, number of partitions, and number of
-        # replicas
-        #
-        #
         super().__init__(
             "com.udacity.weather.v1", 
             key_schema=Weather.key_schema,
@@ -56,9 +50,6 @@ class Weather(Producer):
             with open(f"{Path(__file__).parents[0]}/schemas/weather_key.json") as f:
                 Weather.key_schema = json.load(f)
 
-        #
-        # TODO: Define this value schema in `schemas/weather_value.json
-        #
         if Weather.value_schema is None:
             with open(f"{Path(__file__).parents[0]}/schemas/weather_value.json") as f:
                 Weather.value_schema = json.load(f)
@@ -76,34 +67,12 @@ class Weather(Producer):
     def run(self, month):
         self._set_weather(month)
 
-        #
-        #
-        # TODO: Complete the function by posting a weather event to REST Proxy. Make sure to
-        # specify the Avro schemas and verify that you are using the correct Content-Type header.
-        #
-        #
-
         logger.info("weather kafka proxy integration incomplete - skipping")
         resp = requests.post(
-           #
-           #
-           # TODO: What URL should be POSTed to?
-           #
-           #
            f"{Weather.rest_proxy_url}/topics/{self.topic_name}",
-           #
-           #
-           # TODO: What Headers need to bet set?
-           #
-           #
            headers={"Content-Type": "application/vnd.kafka.avro.v2+json"},
            data=json.dumps(
                {
-                   #
-                   #
-                   # TODO: Provide key schema, value schema, and records
-                   #
-                   #
                    "key_schema": json.dumps(Weather.key_schema),
                    "value_schema": json.dumps(Weather.value_schema),
                     "records": [{
