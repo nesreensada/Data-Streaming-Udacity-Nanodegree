@@ -1,0 +1,48 @@
+./start.sh
+
+/usr/bin/zookeeper-server-start config/zookeeper.properties
+/usr/bin/kafka-server-start config/server.properties
+
+/usr/bin/kafka-topics --create --zookeeper localhost:2181 --replication-factor 1 --partitions 2 --topic police.service.calls
+
+
+/usr/bin/kafka-topics.sh --zookeeper localhost:2181 --delete --topic police.service.calls
+
+spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.11:2.3.4 --master local[*] data_stream.py > submit.log
+
+
+# create topic and deletion 
+
+/usr/bin/kafka-console-producer --broker-list localhost:9092 --topic police.service.calls
+
+/usr/bin/kafka-console-consumer --bootstrap-server localhost:9092 --topic police.service.calls --from-beginning
+
+
+# questions
+
+How did changing values on the SparkSession property parameters affect the throughput and latency of the data?
+
+spark.executor.memory : setting executor memory spark.executor.cores : setting executor cores spark.driver.memory : setting driver memory numInputRecords : The number of records processed in a trigger inputRowsPerSecond : The rate of data arriving processedRowsPerSecond : The rate at which Spark is processing data
+
+What were the 2-3 most efficient SparkSession property key/value pairs? Through testing multiple variations on values, how can you tell these were the most optimal?
+
+spark.default.parallelism : 3 spark.streaming.kafka.maxRatePerPartition : 10
+
+
+
+
+Question 1
+How did changing values on the SparkSession property parameters affect the throughput and latency of the data?
+
+It either increased or decreased processedRowsPerSecond
+
+Question 2
+What were the 2-3 most efficient SparkSession property key/value pairs? Through testing multiple variations on values, how can you tell these were the most optimal?
+
+The options with the most effect was the following, set to the respective values.
+
+The meassure I used to guage the effect was processedRowsPerSecond and the highest value I observed was 301.5151515151515
+
+spark.sql.shuffle.partitions                10
+spark.streaming.kafka.maxRatePerPartition   10
+spark.default.parallelism                   10000
