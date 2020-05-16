@@ -1,0 +1,15 @@
+echo 'schema.registry.url=http://localhost:9092' >> /etc/kafka/connect-distributed.properties
+systemctl start confluent-zookeeper > startup/startup.log 2>&1
+systemctl start confluent-kafka > startup/startup.log 2>&1
+
+
+kafka-topics --create --topic uber --partitions 1 --replication-factor 1 --zookeeper localhost:2181
+
+# on another terminal open
+kafka-console-consumer --bootstrap-server localhost:9092 --topic uber --from-beginning
+
+# to run producer
+python kafka_producer_server.py
+
+# if we want to run ingest_kafka_data.py or trigger_variation.py
+spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.11:2.3.4 ingest_kafka_data.py
