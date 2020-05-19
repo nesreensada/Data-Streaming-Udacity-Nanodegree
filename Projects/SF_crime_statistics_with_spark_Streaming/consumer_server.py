@@ -11,7 +11,7 @@ async def consume(topic_name):
             "group.id": "0"
         }
     )
-    c.subscribe([topic_name])
+    consumer.subscribe([topic_name])
     
     while True:
         message = consumer.poll(1.0)

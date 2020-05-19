@@ -53,25 +53,24 @@ def run_spark_job(spark):
         .select("DF.*")
 
     # TODO select original_crime_type_name and disposition
-    distinct_table = service_table.select('original_crime_type_name','disposition','call_date_time').distinct()
+    distinct_table = service_table.select('original_crime_type_name',
+                                          'disposition','call_date_time').distinct()
 
      # count the number of original crime type
-    agg_df = distinct_table \
-        .select("original_crime_type_name","call_date_time")\
-        .withWatermark("call_date_time", "60 minutes") \
-        .groupBy(psf.window(distinct_table.call_date_time, "10 minutes", "5 minutes"),psf.col("original_crime_type_name"))\
-        .count()
-
+    agg_df = distinct_table\
+        .select(psf.col("original_crime_type_name"), psf.col("call_date_time"), psf.col("disposition"))\
+        .withWatermark("call_date_time", "60 minutes")\
+        .groupBy(psf.window(distinct_table.call_date_time, "10 minutes", "5 minutes"),
+                 psf.col("original_crime_type_name")).count()
     
     # TODO Q1. Submit a screen shot of a batch ingestion of the aggregation
     # TODO write output stream
     query = agg_df \
         .writeStream\
         .format('console')\
-        .outputMode('Complete')\
-        .trigger(processingTime="10 seconds")\
+        .outputMode('complete')\
+        .trigger(processingTime="30 seconds")\
         .start()
-        
         
     # TODO attach a ProgressReporter
     time.sleep(30)
@@ -88,10 +87,10 @@ def run_spark_job(spark):
 
     # TODO join on disposition column
     join_query = agg_df\
-        .join(radio_code_df, agg_df.disposition == radio_code_df.disposition, how="left")
+        .join(radio_code_df, col('agg_df.disposition') == col("radio_code_df.disposition"),  "left")
     
     # to attach progress reporter
-    time.sleep(100)
+    time.sleep(30)
     join_query.awaitTermination()
 
 
@@ -106,12 +105,11 @@ if __name__ == "__main__":
         .config("spark.ui.port", 3000)\
         .getOrCreate()
 
-    #spark.sparkContext.setLogLevel("WARN");
-
-
-    #spark.conf.set("spark.sql.shuffle.partitions",10)
     logger.info("Spark started")
-
+#     spark.conf.set('spark.executor.memory', '3g')
+#     spark.conf.set('spark.executor.cores', '3g')
+#     spark.conf.set('spark.default.parallelism', 100)
+    
     run_spark_job(spark)
 
     spark.stop()
