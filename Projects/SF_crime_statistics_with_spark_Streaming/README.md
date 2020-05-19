@@ -47,15 +47,15 @@ Option 2: `python consumer_server.py`
 ## Example of Kafka Consumer and Spark Streaming output
 ### Kafka Consumer Console Output
 
-![kafka consumer output](https://github.com/nesreensada/Data-Streaming-Udacity-Nanodegree/tree/master/Projects/SF_crime_statistics_with_spark_Streaming/consumer_window.png)
+![kafka consumer output](https://github.com/nesreensada/Data-Streaming-Udacity-Nanodegree/blob/master/Projects/SF_crime_statistics_with_spark_Streaming/consumer_window.png)
 
 ### Progress Reporter
 
-![progress reporter](https://github.com/nesreensada/Data-Streaming-Udacity-Nanodegree/tree/master/Projects/SF_crime_statistics_with_spark_Streaming/progress_report_screen.png)
+![progress reporter](https://github.com/nesreensada/Data-Streaming-Udacity-Nanodegree/blob/master/Projects/SF_crime_statistics_with_spark_Streaming/progress_report_screen.png)
 
 
 ### Spark UI
-![spark UI](https://github.com/nesreensada/Data-Streaming-Udacity-Nanodegree/tree/master/Projects/SF_crime_statistics_with_spark_Streaming/sparkUI.png)
+![spark UI](https://github.com/nesreensada/Data-Streaming-Udacity-Nanodegree/blob/master/Projects/SF_crime_statistics_with_spark_Streaming/sparkUI.png)
 
 
 ## Question 1
